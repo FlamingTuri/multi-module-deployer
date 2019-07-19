@@ -1,5 +1,11 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+// enables CORS for all requests
+var corsOptions = {
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+app.use(cors(corsOptions));
 const axios = require('axios');
 
 pingSentCount = 0;
@@ -11,7 +17,7 @@ app.get('/api/status', function (req, res) {
 app.get('/api/ping', function (req, res) {
   const jsonResponse = {
     "ping": pingSentCount
-  }
+  };
   res.send(jsonResponse);
 });
 
