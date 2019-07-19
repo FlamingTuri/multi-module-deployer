@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +14,16 @@ export class HttpRequestService {
    * Makes a GET http request
    *
    * @param url request's url
+   * @param options the request options
    */
-  get<T>(url: string): Promise<T> {
-    return this.httpClient.get<T>(url).toPromise();
+  get<T>(url: string, options: {} = null): Promise<T> {
+    let result: Observable<T>;
+    if (options) {
+      result = this.httpClient.get<T>(url, options);
+    } else {
+      result = this.httpClient.get<T>(url);
+    }
+    return result.toPromise();
   }
 
   /**

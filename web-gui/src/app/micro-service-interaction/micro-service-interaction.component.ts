@@ -22,11 +22,15 @@ export class MicroServiceInteractionComponent implements OnInit {
 
   getServiceStatus() {
     console.log(`${this.serviceAddress}/api/status`);
-    this.httpRequestService.get(`${this.serviceAddress}/api/status`).then(res => {
+    const options = {responseType: 'text'};
+    this.httpRequestService.get<any>(`${this.serviceAddress}/api/status`, options).then(res => {
       console.log(res);
     });
   }
 
   getCount() {
+    this.httpRequestService.get<any>(`${this.serviceAddress}/api/ping`).then(res => {
+      this.count = res.ping;
+    });
   }
 }
