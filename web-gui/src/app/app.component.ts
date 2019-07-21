@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'web-gui';
+
+  pingCountRoute = '/api/ping';
+  pongCountRoute = '/api/pong';
+  pingCountRetriever: (res) => number = res => res.ping;
+  pongCountRetriever: (res) => number = res => res.pong;
 }
