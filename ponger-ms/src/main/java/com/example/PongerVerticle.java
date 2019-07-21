@@ -50,6 +50,8 @@ public class PongerVerticle extends AbstractVerticle {
         router.get("/api/status")
             .produces(MimeType.TEXT_PLAIN.getValue())
             .handler(this::getStatus);
+        router.get("/api/pong")
+            .handler(this::getPongHandler);
         router.post("/api/ping")
             .consumes(MimeType.APPLICATION_JSON.getValue())
             .produces(MimeType.APPLICATION_JSON.getValue())
@@ -75,6 +77,14 @@ public class PongerVerticle extends AbstractVerticle {
         response.end(PongerVerticle.class.getSimpleName() + " status: active");
     }
 
+    private void getPongHandler(RoutingContext routingContext) {
+        HttpServerResponse response = routingContext.response();
+        response.putHeader(contentTypeHeader, MimeType.APPLICATION_JSON.getValue());
+        JsonObject jsonPongSentCount = new JsonObject();
+        jsonPongSentCount.put("pong", pongSentCount);
+        response.end(jsonPongSentCount.encode());
+    }
+    
     private void pingHandler(RoutingContext routingContext) {
         HttpServerResponse response = routingContext.response();
         JsonObject jsonBody = routingContext.getBodyAsJson();
