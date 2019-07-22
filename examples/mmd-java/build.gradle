@@ -1,0 +1,14 @@
+plugins {
+    id "java"
+    id "application"
+}
+
+mainClassName = 'mmd.App'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile fileTree(dir: '../../build/libs', include: 'multi-module-deployer-all.jar')
+}
