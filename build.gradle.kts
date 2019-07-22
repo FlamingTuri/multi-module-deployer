@@ -7,9 +7,9 @@ repositories {
 }
 
 dependencies {
-    
     implementation("org.apache.commons:commons-lang3:3.9")
 
-    // Use JUnit test framework
-    testImplementation("junit:junit:4.12")
+    val junitVersion = "5.3.1"
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
