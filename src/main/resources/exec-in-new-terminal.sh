@@ -8,7 +8,7 @@ KERNEL_NAME="$(uname -s)"
 # the term window from immediately closing
 EXEC_BASH="; exec bash"
 # the commands to run
-COMMANDS="$1 $EXEC_BASH"
+COMMANDS="$@ $EXEC_BASH"
 
 case "${KERNEL_NAME}" in
     Linux*)     machine=Linux
