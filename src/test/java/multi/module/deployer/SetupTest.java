@@ -9,7 +9,7 @@ public class SetupTest {
 
     @Test
     public void testRequiredFilesExistence() {
-        new EntryPoint();
+        new CmdRunnerImpl();
         String projectFilesDir = System.getProperty("user.home") + File.separator + ".multi-module-deployer";
         File customDir = new File(projectFilesDir);
         assert (customDir.exists());

@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-public abstract class AbstractCmdRunner implements CmdForOs {
+public abstract class AbstractCmdRunner implements CmdRunner {
 
     protected final String projectFilesDir;
     protected final String scriptName;
@@ -37,6 +37,10 @@ public abstract class AbstractCmdRunner implements CmdForOs {
         runtime = Runtime.getRuntime();
     }
 
+    /**
+     * Method run after the script has been copied to the user environment.
+     * Useful to add file permissions.
+     */
     protected abstract void postCopyOperations();
 
     @Override

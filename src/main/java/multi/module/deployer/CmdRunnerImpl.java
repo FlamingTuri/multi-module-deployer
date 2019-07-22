@@ -2,11 +2,11 @@ package multi.module.deployer;
 
 import org.apache.commons.lang3.SystemUtils;
 
-public class EntryPoint implements CmdForOs {
+public class CmdRunnerImpl implements CmdRunner {
 
-    private final CmdForOs cmdRunner;
+    private final CmdRunner cmdRunner;
 
-    public EntryPoint() {
+    public CmdRunnerImpl() {
         if (SystemUtils.IS_OS_WINDOWS) {
             cmdRunner = new WindowsCmdRunner();
         } else {
@@ -20,7 +20,7 @@ public class EntryPoint implements CmdForOs {
     }
 
     @Override
-    public void exec(String linuxCmd, String windowsCmd) {
-        cmdRunner.exec(linuxCmd, windowsCmd);
+    public void exec(String unixCmd, String windowsCmd) {
+        cmdRunner.exec(unixCmd, windowsCmd);
     }
 }
