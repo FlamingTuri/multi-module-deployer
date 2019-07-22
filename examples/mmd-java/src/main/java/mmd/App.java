@@ -1,6 +1,7 @@
 package mmd;
 
-import multi.module.deployer.EntryPoint;
+import multi.module.deployer.CmdRunner;
+import multi.module.deployer.CmdRunnerImpl;
 
 public class App {
 
@@ -16,24 +17,43 @@ public class App {
         String commonCmd;
         String linuxCmd;
         String windowsCmd;
-        EntryPoint entryPoint = new EntryPoint();
+        CmdRunner entryPoint = new CmdRunnerImpl();
 
-        linuxCmd = "cd ../ponger-ms; ./gradlew run";
-        windowsCmd = "cd ..\\ponger-ms & gradlew.bat run";
+        // download dependencies and build ponger-ms
+        linuxCmd = "cd ../ponger-ms; ./gradlew build";
+        windowsCmd = "cd ..\\ponger-ms & gradlew.bat build";
         entryPoint.exec(linuxCmd, windowsCmd);
 
-        sleep(5000);
-
-        commonCmd = "node app.js";
+        // download pinger-ms dependencies
+        commonCmd = "npm install";
         linuxCmd = "cd ../pinger-ms; " + commonCmd;
         windowsCmd = "cd ..\\pinger-ms & " + commonCmd;
         entryPoint.exec(linuxCmd, windowsCmd);
 
-        sleep(3000);
-
-        commonCmd = "npx ng serve -o --poll=3000";
+        // download web-gui dependencies
         linuxCmd = "cd ../web-gui; " + commonCmd;
         windowsCmd = "cd ..\\web-gui & " + commonCmd;
         entryPoint.exec(linuxCmd, windowsCmd);
+
+        // run ponger-ms
+        linuxCmd = "cd ../ponger-ms; ./gradlew run";
+        windowsCmd = "cd ..\\ponger-ms & gradlew.bat run";
+        entryPoint.execInNewTerm(linuxCmd, windowsCmd);
+        // wait for it's setup
+        sleep(5000);
+
+        // run pinger-ms
+        commonCmd = "node app.js";
+        linuxCmd = "cd ../pinger-ms; " + commonCmd;
+        windowsCmd = "cd ..\\pinger-ms & " + commonCmd;
+        entryPoint.execInNewTerm(linuxCmd, windowsCmd);
+        // wait for it's setup
+        sleep(3000);
+
+        // run web-gui
+        commonCmd = "npx ng serve -o --poll=3000";
+        linuxCmd = "cd ../web-gui; " + commonCmd;
+        windowsCmd = "cd ..\\web-gui & " + commonCmd;
+        entryPoint.execInNewTerm(linuxCmd, windowsCmd);
     }
 }
