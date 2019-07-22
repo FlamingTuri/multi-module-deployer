@@ -17,9 +17,4 @@ public class EntryPoint {
     public void exec(String linuxCmd, String windowsCmd) {
         cmdRunner.exec(linuxCmd, windowsCmd);
     }
-
-    public static void main(String[] args) {
-        EntryPoint a = new EntryPoint();
-        a.exec("pwd", "dir");
-    }
 }
