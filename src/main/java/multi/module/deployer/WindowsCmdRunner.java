@@ -12,6 +12,6 @@ public class WindowsCmdRunner extends AbstractCmdRunner implements CmdForOs {
 
     @Override
     public void exec(String unixCmd, String windowsCmd) {
-        run(windowsCmd);
+        run(String.format("\"%s\"", windowsCmd));
     }
 }
