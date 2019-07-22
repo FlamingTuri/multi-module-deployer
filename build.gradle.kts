@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    id("com.github.johnrengelman.shadow") version "5.1.0"
 }
 
 repositories {
