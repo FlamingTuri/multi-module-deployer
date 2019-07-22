@@ -12,6 +12,15 @@ public class WindowsCmdRunner extends AbstractCmdRunner {
 
     @Override
     public void exec(String unixCmd, String windowsCmd) {
-        run(String.format("\"%s\"", windowsCmd));
+        run(wrap(windowsCmd));
+    }
+
+    @Override
+    public void execInNewTerm(String unixCmd, String windowsCmd) {
+        runInNewTerm(wrap(windowsCmd));
+    }
+
+    private String wrap(String string) {
+        return String.format("\"%s\"", string);
     }
 }

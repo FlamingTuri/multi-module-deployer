@@ -23,4 +23,9 @@ public class CmdRunnerImpl implements CmdRunner {
     public void exec(String unixCmd, String windowsCmd) {
         cmdRunner.exec(unixCmd, windowsCmd);
     }
+
+    @Override
+    public void execInNewTerm(String unixCmd, String windowsCmd) {
+        cmdRunner.execInNewTerm(unixCmd, windowsCmd);
+    }
 }

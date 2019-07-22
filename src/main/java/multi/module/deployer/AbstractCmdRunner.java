@@ -9,22 +9,21 @@ import java.nio.file.StandardCopyOption;
 
 public abstract class AbstractCmdRunner implements CmdRunner {
 
-    protected final String projectFilesDir;
-    protected final String scriptName;
     protected final String scriptAbsolutePath;
-    protected final Runtime runtime;
-    protected File workingDir = null;
+    private final Runtime runtime;
+    private File workingDir = null;
 
     public AbstractCmdRunner(String scriptExtension) {
         // create application folder to store its data
-        projectFilesDir = System.getProperty("user.home") + File.separator + ".multi-module-deployer";
+        String userHomeDirectory = System.getProperty("user.home");
+        String projectFilesDir = userHomeDirectory + File.separator + ".multi-module-deployer";
         File customDir = new File(projectFilesDir);
         if (!customDir.exists() && !customDir.mkdirs()) {
             System.err.println("cannot create " + customDir);
             System.exit(-1);
         }
         // create script to execute commands in a new terminal instance
-        scriptName = "/exec-in-new-terminal." + scriptExtension;
+        String scriptName = "/exec-in-new-terminal." + scriptExtension;
         scriptAbsolutePath = projectFilesDir + scriptName;
         InputStream in = getClass().getResourceAsStream(scriptName);
         try {
@@ -48,12 +47,26 @@ public abstract class AbstractCmdRunner implements CmdRunner {
         workingDir = new File(workingDirPath);
     }
 
+    /**
+     * Runs string command in a separate process
+     *
+     * @param cmd the command to run
+     */
     protected void run(String cmd) {
         try {
-            runtime.exec(scriptAbsolutePath + " " + cmd, null, workingDir);
+            runtime.exec(cmd, null, workingDir);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Runs string command in a new detached terminal instance
+     *
+     * @param cmd the command to run
+     */
+    protected void runInNewTerm(String cmd) {
+        run(scriptAbsolutePath + " " + cmd);
     }
 
 }

@@ -29,4 +29,9 @@ public class UnixCmdRunner extends AbstractCmdRunner {
     public void exec(String unixCmd, String windowsCmd) {
         run(unixCmd);
     }
+
+    @Override
+    public void execInNewTerm(String unixCmd, String windowsCmd) {
+        runInNewTerm(unixCmd);
+    }
 }

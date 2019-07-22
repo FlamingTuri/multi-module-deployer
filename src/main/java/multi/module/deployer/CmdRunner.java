@@ -10,10 +10,18 @@ public interface CmdRunner {
     void setWorkingDir(String workingDirPath);
 
     /**
-     * Executes commands in a new detached terminal instance
+     * Executes string command in a terminal
      *
-     * @param unixCmd commands that will be executed in Unix-like environments
-     * @param windowsCmd commands that will be executed in Windows environments
+     * @param unixCmd    string command that will be executed in Unix-like environments
+     * @param windowsCmd string command that will be executed in Windows environments
      */
     void exec(String unixCmd, String windowsCmd);
+
+    /**
+     * Executes string command in a new detached terminal instance
+     *
+     * @param unixCmd    string commands that will be executed in Unix-like environments
+     * @param windowsCmd string commands that will be executed in Windows environments
+     */
+    void execInNewTerm(String unixCmd, String windowsCmd);
 }
