@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # cd to the current script directory
-cd "$(dirname "$0")"
+#cd "$(dirname "$0")"
 # retrieves the kernel name
 KERNEL_NAME="$(uname -s)"
 # running /bin/bash after the commands prevents

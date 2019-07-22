@@ -1,7 +1,7 @@
 @echo off
 
 :: Cd to script current directory
-cd /D "%~dp0"
+::cd /D "%~dp0"
 
 set commands=%*
 

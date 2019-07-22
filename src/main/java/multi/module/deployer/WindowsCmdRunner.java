@@ -1,6 +1,6 @@
 package multi.module.deployer;
 
-public class WindowsCmdRunner extends AbstractCmdRunner implements CmdForOs {
+public class WindowsCmdRunner extends AbstractCmdRunner {
 
     public WindowsCmdRunner() {
         super("bat");

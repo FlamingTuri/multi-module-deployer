@@ -7,12 +7,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-public abstract class AbstractCmdRunner {
+public abstract class AbstractCmdRunner implements CmdForOs {
 
     protected final String projectFilesDir;
     protected final String scriptName;
     protected final String scriptAbsolutePath;
     protected final Runtime runtime;
+    protected File workingDir = null;
 
     public AbstractCmdRunner(String scriptExtension) {
         // create application folder to store its data
@@ -38,9 +39,14 @@ public abstract class AbstractCmdRunner {
 
     protected abstract void postCopyOperations();
 
+    @Override
+    public void setWorkingDir(String workingDirPath) {
+        workingDir = new File(workingDirPath);
+    }
+
     protected void run(String cmd) {
         try {
-            runtime.exec(scriptAbsolutePath + " " + cmd);
+            runtime.exec(scriptAbsolutePath + " " + cmd, null, workingDir);
         } catch (IOException e) {
             e.printStackTrace();
         }

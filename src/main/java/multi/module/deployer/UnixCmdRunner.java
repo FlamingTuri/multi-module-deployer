@@ -8,7 +8,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
 
-public class UnixCmdRunner extends AbstractCmdRunner implements CmdForOs {
+public class UnixCmdRunner extends AbstractCmdRunner {
 
     public UnixCmdRunner() {
         super("sh");
