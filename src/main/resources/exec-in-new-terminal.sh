@@ -21,7 +21,7 @@ case "${KERNEL_NAME}" in
         fi
         ;;
     Darwin*)    machine=Mac
-        open -a Terminal "$COMMANDS"
+        osascript -e "tell application \"Terminal\" to do script \"cd $PWD; clear; $1 $COMMANDS\""
         ;;
     *)          machine="UNSUPPORTED:${KERNEL_NAME}"
 esac
