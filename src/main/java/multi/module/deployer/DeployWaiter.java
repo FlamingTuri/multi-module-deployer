@@ -11,7 +11,7 @@ import io.vertx.mqtt.MqttClient;
 public class DeployWaiter {
 
     private final Vertx vertx;
-    private long retryDelay = 2000;
+    private long retryOnFailDelay = 2000;
 
     public DeployWaiter() {
         this(Vertx.vertx());
@@ -19,6 +19,14 @@ public class DeployWaiter {
 
     public DeployWaiter(Vertx vertx) {
         this.vertx = vertx;
+    }
+
+    public long getRetryOnFailDelay() {
+        return retryOnFailDelay;
+    }
+
+    public void setRetryOnFailDelay(long retryOnFailDelay) {
+        this.retryOnFailDelay = retryOnFailDelay;
     }
 
     public Future<Void> waitHttpDeployment(int port, String host, String requestURI) {
@@ -35,7 +43,7 @@ public class DeployWaiter {
                 promise.complete();
                 client.close();
             } else {
-                vertx.setTimer(retryDelay, r -> waitHttpDeployment(promise, client, port, host, requestURI));
+                vertx.setTimer(retryOnFailDelay, r -> waitHttpDeployment(promise, client, port, host, requestURI));
             }
         });
     }
@@ -54,7 +62,7 @@ public class DeployWaiter {
                 promise.complete();
                 client.close();
             } else {
-                vertx.setTimer(retryDelay, r -> waitWebsocketDeployment(promise, client, port, host, requestURI));
+                vertx.setTimer(retryOnFailDelay, r -> waitWebsocketDeployment(promise, client, port, host, requestURI));
             }
         });
     }
@@ -74,7 +82,7 @@ public class DeployWaiter {
                 client.disconnect();
             } else {
                 System.out.println("Something went wrong ");
-                vertx.setTimer(retryDelay, r -> waitMqttDeployment(promise, client, port, host));
+                vertx.setTimer(retryOnFailDelay, r -> waitMqttDeployment(promise, client, port, host));
             }
         });
     }
