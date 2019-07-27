@@ -1,5 +1,6 @@
 package multi.module.deployer;
 
+import multi.module.deployer.cmdrunner.CmdRunnerImpl;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.Test;
 

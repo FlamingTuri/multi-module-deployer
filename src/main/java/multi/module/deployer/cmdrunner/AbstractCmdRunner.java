@@ -1,4 +1,4 @@
-package multi.module.deployer;
+package multi.module.deployer.cmdrunner;
 
 import java.io.File;
 import java.io.IOException;

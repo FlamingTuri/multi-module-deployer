@@ -1,4 +1,4 @@
-package multi.module.deployer;
+package multi.module.deployer.cmdrunner;
 
 public interface CmdRunner {
 
