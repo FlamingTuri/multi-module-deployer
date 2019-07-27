@@ -2,8 +2,8 @@ package multi.module.deployer.moduleconfig;
 
 public abstract class AbstractModuleConfig implements ModuleConfig {
 
-    private final String unixCmd;
-    private final String windowsCmd;
+    protected final String unixCmd;
+    protected final String windowsCmd;
     protected final int port;
     protected final String address;
     protected final String requestURI;

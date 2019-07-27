@@ -4,7 +4,7 @@ import io.vertx.core.Future;
 import multi.module.deployer.DeployWaiter;
 
 
-public class HttpModuleConfig extends AbstractModuleConfig {
+public class HttpModuleConfig extends AbstractExecInNewTermModuleConfig {
 
     public HttpModuleConfig(String unixCmd, String windowsCmd, int port, String address, String requestURI) {
         super(unixCmd, windowsCmd, port, address, requestURI);

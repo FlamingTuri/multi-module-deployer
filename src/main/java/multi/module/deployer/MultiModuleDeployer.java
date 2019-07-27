@@ -35,10 +35,10 @@ public class MultiModuleDeployer {
     private void deploy(int idx) {
         if (idx < moduleConfigList.size()) {
             List<Future> futures = new ArrayList<>();
-            ModuleConfig[] cmdSetups = this.moduleConfigList.get(idx);
-            for (ModuleConfig cmdSetup : cmdSetups) {
-                cmdRunner.execInNewTerm(cmdSetup.getUnixCmd(), cmdSetup.getWindowsCmd());
-                Future deploymentFuture = cmdSetup.waitDeployment(deployWaiter);
+            ModuleConfig[] moduleConfigs = this.moduleConfigList.get(idx);
+            for (ModuleConfig moduleConfig : moduleConfigs) {
+                moduleConfig.deploy(cmdRunner);
+                Future deploymentFuture = moduleConfig.waitDeployment(deployWaiter);
                 futures.add(deploymentFuture);
             }
             CompositeFuture.all(futures).setHandler(h -> deploy(idx + 1));
