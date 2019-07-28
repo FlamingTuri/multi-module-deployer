@@ -7,6 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * Abstract class wrapping the logic for running low level commands
+ */
 public abstract class AbstractCmdRunner implements CmdRunner {
 
     protected final String scriptAbsolutePath;
@@ -48,12 +51,19 @@ public abstract class AbstractCmdRunner implements CmdRunner {
         setWorkingDir(new File(workingDirPath));
     }
 
+    @Override
     public void setWorkingDir(File workingDir) {
         if (workingDir.isDirectory()) {
             processBuilder.directory(workingDir);
         }
     }
 
+    /**
+     * Wraps the string between ""
+     *
+     * @param string the string to wrap
+     * @return the wrapped string
+     */
     protected String wrap(String string) {
         return String.format("\"%s\"", string);
     }
@@ -62,12 +72,14 @@ public abstract class AbstractCmdRunner implements CmdRunner {
      * Runs string command in a separate process
      *
      * @param cmd the command to run
+     * @return the instance of the run process
      */
     protected Process run(String cmd) {
         Process process = null;
         try {
             commands[2] = cmd;
             processBuilder.command(commands);
+            // runs the commands
             process = processBuilder.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -79,6 +91,7 @@ public abstract class AbstractCmdRunner implements CmdRunner {
      * Runs string command in a new detached terminal instance
      *
      * @param cmd the command to run
+     * @return the instance of the run process, this is not the detached terminal one
      */
     protected Process runInNewTerm(String cmd) {
         return run(scriptAbsolutePath + " " + cmd);

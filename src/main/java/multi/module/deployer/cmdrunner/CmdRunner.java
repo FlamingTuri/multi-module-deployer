@@ -1,5 +1,7 @@
 package multi.module.deployer.cmdrunner;
 
+import java.io.File;
+
 public interface CmdRunner {
 
     /**
@@ -8,6 +10,13 @@ public interface CmdRunner {
      * @param workingDirPath the absolute path of the directory to set
      */
     void setWorkingDir(String workingDirPath);
+
+    /**
+     * Sets the directory where the commands will be executed
+     *
+     * @param workingDir the directory to set
+     */
+    void setWorkingDir(File workingDir);
 
     /**
      * Executes string command in a terminal

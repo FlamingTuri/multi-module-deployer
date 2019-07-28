@@ -8,6 +8,9 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
 
+/**
+ * Class implementing a command runner for Unix-like environments
+ */
 public class UnixCmdRunner extends AbstractCmdRunner {
 
     public UnixCmdRunner() {

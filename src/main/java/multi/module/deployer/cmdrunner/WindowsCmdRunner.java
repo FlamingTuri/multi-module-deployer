@@ -1,5 +1,8 @@
 package multi.module.deployer.cmdrunner;
 
+/**
+ * Class implementing a command runner for Windows environments
+ */
 public class WindowsCmdRunner extends AbstractCmdRunner {
 
     public WindowsCmdRunner() {
