@@ -10,10 +10,10 @@ import java.nio.file.StandardCopyOption;
 public abstract class AbstractCmdRunner implements CmdRunner {
 
     protected final String scriptAbsolutePath;
-    private final Runtime runtime;
-    private File workingDir = null;
+    private final ProcessBuilder processBuilder;
+    private String[] commands;
 
-    public AbstractCmdRunner(String scriptExtension) {
+    public AbstractCmdRunner(String scriptExtension, String interpreter, String flags) {
         // create application folder to store its data
         String userHomeDirectory = System.getProperty("user.home");
         String projectFilesDir = userHomeDirectory + File.separator + ".multi-module-deployer";
@@ -33,7 +33,8 @@ public abstract class AbstractCmdRunner implements CmdRunner {
         }
         postCopyOperations();
         // setup runtime to run low level commands
-        runtime = Runtime.getRuntime();
+        processBuilder = new ProcessBuilder();
+        commands = new String[]{interpreter, flags, ""};
     }
 
     /**
@@ -44,7 +45,17 @@ public abstract class AbstractCmdRunner implements CmdRunner {
 
     @Override
     public void setWorkingDir(String workingDirPath) {
-        workingDir = new File(workingDirPath);
+        setWorkingDir(new File(workingDirPath));
+    }
+
+    public void setWorkingDir(File workingDir) {
+        if (workingDir.isDirectory()) {
+            processBuilder.directory(workingDir);
+        }
+    }
+
+    protected String wrap(String string) {
+        return String.format("\"%s\"", string);
     }
 
     /**
@@ -52,12 +63,16 @@ public abstract class AbstractCmdRunner implements CmdRunner {
      *
      * @param cmd the command to run
      */
-    protected void run(String cmd) {
+    protected Process run(String cmd) {
+        Process process = null;
         try {
-            runtime.exec(cmd, null, workingDir);
+            commands[2] = cmd;
+            processBuilder.command(commands);
+            process = processBuilder.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return process;
     }
 
     /**
@@ -65,8 +80,8 @@ public abstract class AbstractCmdRunner implements CmdRunner {
      *
      * @param cmd the command to run
      */
-    protected void runInNewTerm(String cmd) {
-        run(scriptAbsolutePath + " " + cmd);
+    protected Process runInNewTerm(String cmd) {
+        return run(scriptAbsolutePath + " " + cmd);
     }
 
 }

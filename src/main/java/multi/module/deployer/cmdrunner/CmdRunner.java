@@ -15,7 +15,7 @@ public interface CmdRunner {
      * @param unixCmd    string command that will be executed in Unix-like environments
      * @param windowsCmd string command that will be executed in Windows environments
      */
-    void exec(String unixCmd, String windowsCmd);
+    Process exec(String unixCmd, String windowsCmd);
 
     /**
      * Executes string command in a new detached terminal instance
@@ -23,5 +23,5 @@ public interface CmdRunner {
      * @param unixCmd    string commands that will be executed in Unix-like environments
      * @param windowsCmd string commands that will be executed in Windows environments
      */
-    void execInNewTerm(String unixCmd, String windowsCmd);
+    Process execInNewTerm(String unixCmd, String windowsCmd);
 }

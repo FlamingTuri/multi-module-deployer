@@ -11,7 +11,7 @@ import java.util.Set;
 public class UnixCmdRunner extends AbstractCmdRunner {
 
     public UnixCmdRunner() {
-        super("sh");
+        super("sh", "bash", "-c");
     }
 
     @Override
@@ -26,12 +26,12 @@ public class UnixCmdRunner extends AbstractCmdRunner {
     }
 
     @Override
-    public void exec(String unixCmd, String windowsCmd) {
-        run(unixCmd);
+    public Process exec(String unixCmd, String windowsCmd) {
+        return run(unixCmd);
     }
 
     @Override
-    public void execInNewTerm(String unixCmd, String windowsCmd) {
-        runInNewTerm(unixCmd);
+    public Process execInNewTerm(String unixCmd, String windowsCmd) {
+        return runInNewTerm(wrap(unixCmd));
     }
 }

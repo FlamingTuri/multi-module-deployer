@@ -20,12 +20,12 @@ public class CmdRunnerImpl implements CmdRunner {
     }
 
     @Override
-    public void exec(String unixCmd, String windowsCmd) {
-        cmdRunner.exec(unixCmd, windowsCmd);
+    public Process exec(String unixCmd, String windowsCmd) {
+        return cmdRunner.exec(unixCmd, windowsCmd);
     }
 
     @Override
-    public void execInNewTerm(String unixCmd, String windowsCmd) {
-        cmdRunner.execInNewTerm(unixCmd, windowsCmd);
+    public Process execInNewTerm(String unixCmd, String windowsCmd) {
+        return cmdRunner.execInNewTerm(unixCmd, windowsCmd);
     }
 }
