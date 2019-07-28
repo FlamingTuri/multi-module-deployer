@@ -6,17 +6,19 @@ import multi.module.deployer.cmdrunner.CmdRunner;
 
 public class SetupModuleConfig extends AbstractModuleConfig {
 
+    private Process process;
+
     public SetupModuleConfig(String unixCmd, String windowsCmd) {
         super(unixCmd, windowsCmd, -1, null, null);
     }
 
     @Override
     public void deploy(CmdRunner cmdRunner) {
-        cmdRunner.exec(unixCmd, windowsCmd);
+        process = cmdRunner.exec(unixCmd, windowsCmd);
     }
 
     @Override
     public Future<Void> waitDeployment(DeployWaiter deployWaiter) {
-        return Future.succeededFuture();
+        return deployWaiter.waitProcessTermination(process);
     }
 }

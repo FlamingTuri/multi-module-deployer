@@ -7,6 +7,10 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.mqtt.MqttClient;
 
+import java.io.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 
 public class DeployWaiter {
 
@@ -85,6 +89,38 @@ public class DeployWaiter {
                 vertx.setTimer(retryOnFailDelay, r -> waitMqttDeployment(promise, client, port, host));
             }
         });
+    }
+
+    public Future<Void> waitProcessTermination(Process process) {
+        Promise<Void> promise = Promise.promise();
+        System.out.println("Waiting process termination");
+        vertx.executeBlocking(blockingCodePromise -> {
+            try {
+                readOutput(process);
+                process.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            blockingCodePromise.complete();
+        }, resultHandler -> promise.complete());
+        return promise.future();
+    }
+
+    private void readOutput(Process process) {
+        readStream(process.getInputStream(), System.out::println);
+        readStream(process.getErrorStream(), System.err::println);
+    }
+
+    private void readStream(InputStream in, Consumer<String> print) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        String line;
+        try {
+            while ((line = br.readLine()) != null) {
+                print.accept(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deployCompleted() {
