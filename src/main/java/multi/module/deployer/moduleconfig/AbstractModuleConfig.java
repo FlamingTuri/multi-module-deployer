@@ -1,5 +1,8 @@
 package multi.module.deployer.moduleconfig;
 
+/**
+ * Abstract class inherited by all the module configs versions
+ */
 public abstract class AbstractModuleConfig implements ModuleConfig {
 
     protected final String unixCmd;

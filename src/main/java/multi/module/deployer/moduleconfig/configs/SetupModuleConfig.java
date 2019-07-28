@@ -1,9 +1,13 @@
-package multi.module.deployer.moduleconfig;
+package multi.module.deployer.moduleconfig.configs;
 
 import io.vertx.core.Future;
 import multi.module.deployer.DeployWaiter;
 import multi.module.deployer.cmdrunner.CmdRunner;
+import multi.module.deployer.moduleconfig.AbstractModuleConfig;
 
+/**
+ * Class that waits for a module termination
+ */
 public class SetupModuleConfig extends AbstractModuleConfig {
 
     private Process process;
