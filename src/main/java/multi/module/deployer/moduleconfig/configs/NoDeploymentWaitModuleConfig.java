@@ -9,10 +9,15 @@ import multi.module.deployer.moduleconfig.AbstractExecInNewTermModuleConfig;
  */
 public class NoDeploymentWaitModuleConfig extends AbstractExecInNewTermModuleConfig {
 
+    /**
+     * @param unixCmd    the commands to run on Unix-like environments
+     * @param windowsCmd the commands to run on Windows environments
+     */
     public NoDeploymentWaitModuleConfig(String unixCmd, String windowsCmd) {
         super(unixCmd, windowsCmd, -1, null, null);
     }
 
+    @Override
     public Future<Void> waitDeployment(DeployWaiter deployWaiter) {
         return Future.succeededFuture();
     }

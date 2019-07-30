@@ -1,17 +1,23 @@
 package multi.module.deployer;
 
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.WebSocket;
+import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.mqtt.MqttClient;
+import io.vertx.mqtt.messages.MqttConnAckMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Class to wait for the deployment of a module
@@ -50,53 +56,55 @@ public class DeployWaiter {
     /**
      * Waits the module deployment by sending a get request and waiting for a successful response
      *
-     * @param port       the port where the microservice is listening to
-     * @param host       the microservice host address
-     * @param requestURI the requested api
+     * @param port             the port where the microservice is listening to
+     * @param host             the microservice host address
+     * @param requestURI       the requested api
+     * @param successCondition the condition to fulfill to consider the module deployed
      * @return a future that will be completed after the request succeeds
      */
-    public Future<Void> waitHttpDeployment(int port, String host, String requestURI) {
+    public Future<Void> waitHttpDeployment(int port, String host, String requestURI, Predicate<AsyncResult<HttpResponse<Buffer>>> successCondition) {
         System.out.println("Waiting for http response at " + format(port, host, requestURI));
         Promise<Void> promise = Promise.promise();
         WebClient client = WebClient.create(vertx);
-        waitHttpDeployment(promise, client, port, host, requestURI);
+        waitHttpDeployment(promise, client, port, host, requestURI, successCondition);
         return promise.future();
     }
 
-    private void waitHttpDeployment(Promise<Void> promise, WebClient client, int port, String host, String requestURI) {
+    private void waitHttpDeployment(Promise<Void> promise, WebClient client, int port, String host, String requestURI, Predicate<AsyncResult<HttpResponse<Buffer>>> successCondition) {
         client.get(port, host, requestURI).send(ar -> {
-            if (ar.succeeded()) {
-                promise.complete();
+            if (successCondition.test(ar)) {
                 client.close();
+                promise.complete();
             } else {
-                vertx.setTimer(retryOnFailDelay, r -> waitHttpDeployment(promise, client, port, host, requestURI));
+                vertx.setTimer(retryOnFailDelay, r -> waitHttpDeployment(promise, client, port, host, requestURI, successCondition));
             }
         });
     }
 
     /**
-     * Waits the module deployment by connecting to it's web socket
+     * Waits the module deployment by connecting to its web socket
      *
-     * @param port       the port where the microservice is listening to
-     * @param host       the microservice host address
-     * @param requestURI the requested api
+     * @param port             the port where the microservice is listening to
+     * @param host             the microservice host address
+     * @param requestURI       the requested api
+     * @param successCondition the condition to fulfill to consider the module deployed
      * @return a future that will be completed after the connection succeeds
      */
-    public Future<Void> waitWebsocketDeployment(int port, String host, String requestURI) {
+    public Future<Void> waitWebsocketDeployment(int port, String host, String requestURI, Predicate<AsyncResult<WebSocket>> successCondition) {
         System.out.println("Waiting for websocket connection at " + format(port, host, requestURI));
         Promise<Void> promise = Promise.promise();
         HttpClient client = vertx.createHttpClient();
-        waitWebsocketDeployment(promise, client, port, host, requestURI);
+        waitWebsocketDeployment(promise, client, port, host, requestURI, successCondition);
         return promise.future();
     }
 
-    private void waitWebsocketDeployment(Promise<Void> promise, HttpClient client, int port, String host, String requestURI) {
+    private void waitWebsocketDeployment(Promise<Void> promise, HttpClient client, int port, String host, String requestURI, Predicate<AsyncResult<WebSocket>> successCondition) {
         client.webSocket(port, host, requestURI, res -> {
-            if (res.succeeded()) {
-                promise.complete();
+            if (successCondition.test(res)) {
                 client.close();
+                promise.complete();
             } else {
-                vertx.setTimer(retryOnFailDelay, r -> waitWebsocketDeployment(promise, client, port, host, requestURI));
+                vertx.setTimer(retryOnFailDelay, r -> waitWebsocketDeployment(promise, client, port, host, requestURI, successCondition));
             }
         });
     }
@@ -104,25 +112,26 @@ public class DeployWaiter {
     /**
      * Waits the module deployment by subscribing via mqtt
      *
-     * @param port the port where the microservice is listening to
-     * @param host the microservice host address
+     * @param port             the port where the microservice is listening to
+     * @param host             the microservice host address
+     * @param successCondition the condition to fulfill to consider the module deployed
      * @return a future that will be completed after the mqtt subscription succeeds
      */
-    public Future<Void> waitMqttDeployment(int port, String host) {
+    public Future<Void> waitMqttDeployment(int port, String host, Predicate<AsyncResult<MqttConnAckMessage>> successCondition) {
         System.out.println("Waiting for mqtt successful subscription at " + format(port, host));
         Promise<Void> promise = Promise.promise();
         MqttClient client = MqttClient.create(vertx);
-        waitMqttDeployment(promise, client, port, host);
+        waitMqttDeployment(promise, client, port, host, successCondition);
         return promise.future();
     }
 
-    private void waitMqttDeployment(Promise<Void> promise, MqttClient client, int port, String host) {
-        client.connect(port, host, s -> {
-            if (s.succeeded()) {
-                promise.complete();
+    private void waitMqttDeployment(Promise<Void> promise, MqttClient client, int port, String host, Predicate<AsyncResult<MqttConnAckMessage>> successCondition) {
+        client.connect(port, host, ackMessage -> {
+            if (successCondition.test(ackMessage)) {
                 client.disconnect();
+                promise.complete();
             } else {
-                vertx.setTimer(retryOnFailDelay, r -> waitMqttDeployment(promise, client, port, host));
+                vertx.setTimer(retryOnFailDelay, r -> waitMqttDeployment(promise, client, port, host, successCondition));
             }
         });
     }

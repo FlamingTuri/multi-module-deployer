@@ -11,6 +11,13 @@ public abstract class AbstractModuleConfig implements ModuleConfig {
     protected final String address;
     protected final String requestURI;
 
+    /**
+     * @param unixCmd    the commands to run on Unix-like environments
+     * @param windowsCmd the commands to run on Windows environments
+     * @param port       the port where the microservice is listening to
+     * @param address    the microservice host address
+     * @param requestURI the requested api
+     */
     public AbstractModuleConfig(String unixCmd, String windowsCmd, int port, String address, String requestURI) {
         this.unixCmd = unixCmd;
         this.windowsCmd = windowsCmd;

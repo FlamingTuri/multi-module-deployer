@@ -12,6 +12,10 @@ public class SetupModuleConfig extends AbstractModuleConfig {
 
     private Process process;
 
+    /**
+     * @param unixCmd    the commands to run on Unix-like environments
+     * @param windowsCmd the commands to run on Windows environments
+     */
     public SetupModuleConfig(String unixCmd, String windowsCmd) {
         super(unixCmd, windowsCmd, -1, null, null);
     }
