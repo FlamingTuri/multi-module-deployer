@@ -3,7 +3,7 @@ package multi.module.deployer;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import multi.module.deployer.cmdrunner.CmdRunner;
-import multi.module.deployer.cmdrunner.CmdRunnerImpl;
+import multi.module.deployer.cmdrunner.CmdRunnerRetriever;
 import multi.module.deployer.moduleconfig.ModuleConfig;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 public class MultiModuleDeployer {
 
     private final List<ModuleConfig[]> moduleConfigList = new ArrayList<>();
-    private final CmdRunner cmdRunner = new CmdRunnerImpl();
+    private final CmdRunner cmdRunner = CmdRunnerRetriever.get();
     private final DeployWaiter deployWaiter = new DeployWaiter();
 
     /**

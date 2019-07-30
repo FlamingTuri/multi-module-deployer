@@ -1,6 +1,6 @@
 package multi.module.deployer;
 
-import multi.module.deployer.cmdrunner.CmdRunnerImpl;
+import multi.module.deployer.cmdrunner.CmdRunnerRetriever;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ public class SetupTest {
 
     @Test
     public void testRequiredFilesExistence() {
-        new CmdRunnerImpl();
+        CmdRunnerRetriever.get();
         String projectFilesDir = System.getProperty("user.home") + File.separator + ".multi-module-deployer";
         File customDir = new File(projectFilesDir);
         assert (customDir.exists());
