@@ -1,10 +1,17 @@
 package multi.module.deployer.moduleconfig.info;
 
+/**
+ * Class implementing the fields necessary to check the deployment of service modules
+ */
 public class ServiceInfo implements ModuleInfo {
 
     private final int port;
     private final String address;
 
+    /**
+     * @param port    the port where the microservice is listening to
+     * @param address the microservice host address
+     */
     public ServiceInfo(int port, String address) {
         this.port = port;
         this.address = address;
@@ -28,43 +35,3 @@ public class ServiceInfo implements ModuleInfo {
         return address;
     }
 }
-
-
-/**
- * TODO:
- * Gets the Unix commands used to deploy the module
- *
- * @return the Unix commands used to deploy the module
- * <p>
- * Gets the Windows commands used to deploy the module
- * @return the Windows commands used to deploy the module
- * <p>
- * Gets the Windows commands used to deploy the module
- * @return the Windows commands used to deploy the module
- * <p>
- * Gets the Windows commands used to deploy the module
- * @return the Windows commands used to deploy the module
- * <p>
- * Gets the Windows commands used to deploy the module
- * @return the Windows commands used to deploy the module
- * <p>
- * Gets the Windows commands used to deploy the module
- * @return the Windows commands used to deploy the module
- * <p>
- * Gets the Windows commands used to deploy the module
- * @return the Windows commands used to deploy the module
- * <p>
- * Gets the Windows commands used to deploy the module
- * @return the Windows commands used to deploy the module
- * <p>
- * Gets the Windows commands used to deploy the module
- * @return the Windows commands used to deploy the module
- */
-//String getUnixCmd();
-
-/**
- * Gets the Windows commands used to deploy the module
- *
- * @return the Windows commands used to deploy the module
- */
-//  String getWindowsCmd();

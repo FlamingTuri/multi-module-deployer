@@ -29,7 +29,7 @@ public class ModuleConfigFactory {
      *
      * @param unixCmd    the commands to run on Unix-like environments
      * @param windowsCmd the commands to run on Windows environments
-     * @return the created SetupModuleConfig instance
+     * @return the created NoDeploymentWaitModuleConfig instance
      */
     public static ModuleConfig noDeploymentWaitModuleConfig(String unixCmd, String windowsCmd) {
         return new NoDeploymentWaitModuleConfig(unixCmd, windowsCmd);
@@ -43,7 +43,7 @@ public class ModuleConfigFactory {
      * @param port       the port where the microservice is listening to
      * @param address    the microservice host address
      * @param requestURI the requested api
-     * @return the created SetupModuleConfig instance
+     * @return the created HttpModuleConfig instance
      */
     public static ModuleConfig<AsyncResult<HttpResponse<Buffer>>> httpModuleConfig(String unixCmd, String windowsCmd, int port, String address, String requestURI) {
         return new HttpModuleConfig(unixCmd, windowsCmd, port, address, requestURI);
@@ -57,7 +57,7 @@ public class ModuleConfigFactory {
      * @param port       the port where the microservice is listening to
      * @param address    the microservice host address
      * @param requestURI the requested api
-     * @return the created SetupModuleConfig instance
+     * @return the created WebSocketModuleConfig instance
      */
     public static ModuleConfig<AsyncResult<WebSocket>> webSocketModuleConfig(String unixCmd, String windowsCmd, int port, String address, String requestURI) {
         return new WebSocketModuleConfig(unixCmd, windowsCmd, port, address, requestURI);
@@ -70,7 +70,7 @@ public class ModuleConfigFactory {
      * @param windowsCmd the commands to run on Windows environments
      * @param port       the port where the microservice is listening to
      * @param address    the microservice host address
-     * @return the created SetupModuleConfig instance
+     * @return the created MqttModuleConfig instance
      */
     public static ModuleConfig<AsyncResult<MqttConnAckMessage>> mqttModuleConfig(String unixCmd, String windowsCmd, int port, String address) {
         return new MqttModuleConfig(unixCmd, windowsCmd, port, address);

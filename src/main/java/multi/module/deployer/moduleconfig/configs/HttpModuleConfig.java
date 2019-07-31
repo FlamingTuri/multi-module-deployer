@@ -19,6 +19,9 @@ public class HttpModuleConfig extends AbstractAsyncResultModuleConfig<HttpRespon
      *
      * @param unixCmd    the commands to run on Unix-like environments
      * @param windowsCmd the commands to run on Windows environments
+     * @param port       the port where the microservice is listening to
+     * @param address    the microservice host address
+     * @param requestURI the requested api
      */
     public HttpModuleConfig(String unixCmd, String windowsCmd, int port, String address, String requestURI) {
         super(unixCmd, windowsCmd, new HttpServiceInfo(port, address, requestURI));

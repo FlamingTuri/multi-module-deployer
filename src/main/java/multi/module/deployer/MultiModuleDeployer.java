@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Library entry point to deploy modules and wait for their setup
+ * Library entry point that allows to deploy modules and wait for their setup
  */
 public class MultiModuleDeployer {
 

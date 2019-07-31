@@ -6,10 +6,12 @@ import multi.module.deployer.moduleconfig.info.ModuleInfo;
 import java.util.function.Predicate;
 
 /**
- * Abstract class inherited by all the module configs versions
+ * Abstract class that should be extended by all the module configs implementations
  *
- * @param <T>
- * @param <M>
+ * @param <T> the type of the value passed to the Predicate that verifies
+ *            if the deployment condition is fulfilled
+ * @param <M> the implementation of moduleInfo whose parameters will be used
+ *            to check the module deployment
  */
 public abstract class AbstractModuleConfig<T, M extends ModuleInfo> implements ModuleConfig<T> {
 
@@ -23,6 +25,7 @@ public abstract class AbstractModuleConfig<T, M extends ModuleInfo> implements M
     /**
      * @param unixCmd    the commands to run on Unix-like environments
      * @param windowsCmd the commands to run on Windows environments
+     * @param moduleInfo the module infos used to check the successful module deployment
      */
     public AbstractModuleConfig(String unixCmd, String windowsCmd, M moduleInfo) {
         this.unixCmd = unixCmd;
@@ -30,22 +33,11 @@ public abstract class AbstractModuleConfig<T, M extends ModuleInfo> implements M
         this.moduleInfo = moduleInfo;
     }
 
-    /**
-     * Gets the time to wait before rechecking for module deployment
-     *
-     * @return the time to wait
-     */
     @Override
     public long getRetryOnFailDelay() {
         return retryOnFailDelay;
     }
 
-    /**
-     * Sets the time to wait before rechecking for module deployment
-     *
-     * @param retryOnFailDelay the time to wait
-     * @return this to enable fluency
-     */
     @Override
     public ModuleConfig<T> setRetryOnFailDelay(long retryOnFailDelay) {
         this.retryOnFailDelay = retryOnFailDelay;
@@ -58,14 +50,34 @@ public abstract class AbstractModuleConfig<T, M extends ModuleInfo> implements M
         return this;
     }
 
+    /**
+     * Sets the used vertx instance
+     *
+     * @param vertx the vertx instance to set
+     */
     protected void setVertxInstance(Vertx vertx) {
         this.vertx = vertx;
     }
 
+    /**
+     * For logging utility purposes.
+     *
+     * @param port the service port
+     * @param host the service host
+     * @return ${host}:${port};
+     */
     protected String format(int port, String host) {
         return host + ":" + port;
     }
 
+    /**
+     * For logging utility purposes.
+     *
+     * @param port       the service port
+     * @param host       the service host
+     * @param requestURI the request URI
+     * @return ${host}:${port}${requestURI};
+     */
     protected String format(int port, String host, String requestURI) {
         return format(port, host) + requestURI;
     }

@@ -7,7 +7,8 @@ import multi.module.deployer.cmdrunner.CmdRunner;
 import java.util.function.Predicate;
 
 /**
- * @param <T> the type of the value passed to the Predicate that verifies the fulfill of the condition
+ * @param <T> the type of the value passed to the Predicate that verifies
+ *            if the deployment condition is fulfilled
  */
 public interface ModuleConfig<T> {
 
