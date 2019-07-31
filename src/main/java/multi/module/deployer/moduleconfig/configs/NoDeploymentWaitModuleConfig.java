@@ -7,7 +7,7 @@ import multi.module.deployer.moduleconfig.AbstractExecInNewTermModuleConfig;
 /**
  * Class that does not wait for a module deployment
  */
-public class NoDeploymentWaitModuleConfig extends AbstractExecInNewTermModuleConfig {
+public class NoDeploymentWaitModuleConfig extends AbstractExecInNewTermModuleConfig<Void> {
 
     /**
      * @param unixCmd    the commands to run on Unix-like environments

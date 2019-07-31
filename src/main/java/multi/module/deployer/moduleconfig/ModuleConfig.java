@@ -1,11 +1,31 @@
 package multi.module.deployer.moduleconfig;
 
 import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import multi.module.deployer.DeployWaiter;
 import multi.module.deployer.cmdrunner.CmdRunner;
 
+import java.util.function.Predicate;
 
-public interface ModuleConfig {
+
+public interface ModuleConfig<T> {
+
+    /**
+     * Gets the time to wait before rechecking for module deployment
+     *
+     * @return the time to wait
+     */
+    long getRetryOnFailDelay();
+
+    /**
+     * Sets the time to wait before rechecking for module deployment
+     *
+     * @param retryOnFailDelay the time to wait
+     * @return this to enable fluency
+     */
+    ModuleConfig setRetryOnFailDelay(long retryOnFailDelay);
+
+    ModuleConfig setSuccessCondition(Predicate<T> successCondition);
 
     /**
      * Gets the Unix commands used to deploy the module
