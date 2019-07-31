@@ -1,41 +1,33 @@
 package multi.module.deployer.moduleconfig;
 
 import io.vertx.core.Vertx;
+import multi.module.deployer.moduleconfig.info.ModuleInfo;
 
 import java.util.function.Predicate;
 
 /**
  * Abstract class inherited by all the module configs versions
+ *
+ * @param <T>
+ * @param <M>
  */
-public abstract class AbstractModuleConfig<T> implements ModuleConfig<T> {
+public abstract class AbstractModuleConfig<T, M extends ModuleInfo> implements ModuleConfig<T> {
 
-    protected final Vertx vertx;
     protected final String unixCmd;
     protected final String windowsCmd;
-    protected final int port;
-    protected final String address;
-    protected final String requestURI;
-    protected long retryOnFailDelay = 2000;
+    protected final M moduleInfo;
+    protected Vertx vertx;
     protected Predicate<T> successCondition;
-
-    public AbstractModuleConfig(String unixCmd, String windowsCmd, int port, String address, String requestURI) {
-        this(Vertx.vertx(), unixCmd, windowsCmd, port, address, requestURI);
-    }
+    protected long retryOnFailDelay = 2000;
 
     /**
      * @param unixCmd    the commands to run on Unix-like environments
      * @param windowsCmd the commands to run on Windows environments
-     * @param port       the port where the microservice is listening to
-     * @param address    the microservice host address
-     * @param requestURI the requested api
      */
-    public AbstractModuleConfig(Vertx vertx, String unixCmd, String windowsCmd, int port, String address, String requestURI) {
-        this.vertx = vertx;
+    public AbstractModuleConfig(String unixCmd, String windowsCmd, M moduleInfo) {
         this.unixCmd = unixCmd;
         this.windowsCmd = windowsCmd;
-        this.port = port;
-        this.address = address;
-        this.requestURI = requestURI;
+        this.moduleInfo = moduleInfo;
     }
 
     /**
@@ -55,40 +47,19 @@ public abstract class AbstractModuleConfig<T> implements ModuleConfig<T> {
      * @return this to enable fluency
      */
     @Override
-    public ModuleConfig setRetryOnFailDelay(long retryOnFailDelay) {
+    public ModuleConfig<T> setRetryOnFailDelay(long retryOnFailDelay) {
         this.retryOnFailDelay = retryOnFailDelay;
         return this;
     }
 
     @Override
-    public ModuleConfig setSuccessCondition(Predicate<T> successCondition) {
+    public ModuleConfig<T> setSuccessCondition(Predicate<T> successCondition) {
         this.successCondition = successCondition;
         return this;
     }
 
-    @Override
-    public String getUnixCmd() {
-        return unixCmd;
-    }
-
-    @Override
-    public String getWindowsCmd() {
-        return windowsCmd;
-    }
-
-    @Override
-    public int getPort() {
-        return port;
-    }
-
-    @Override
-    public String getAddress() {
-        return address;
-    }
-
-    @Override
-    public String getRequestURI() {
-        return requestURI;
+    protected void setVertxInstance(Vertx vertx) {
+        this.vertx = vertx;
     }
 
     protected String format(int port, String host) {

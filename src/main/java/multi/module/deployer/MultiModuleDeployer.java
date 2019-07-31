@@ -2,6 +2,7 @@ package multi.module.deployer;
 
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import multi.module.deployer.cmdrunner.CmdRunner;
 import multi.module.deployer.cmdrunner.CmdRunnerRetriever;
 import multi.module.deployer.moduleconfig.ModuleConfig;
@@ -16,7 +17,7 @@ public class MultiModuleDeployer {
 
     private final List<ModuleConfig[]> moduleConfigList = new ArrayList<>();
     private final CmdRunner cmdRunner = CmdRunnerRetriever.get();
-    private final DeployWaiter deployWaiter = new DeployWaiter();
+    private final Vertx vertx = Vertx.vertx();
 
     /**
      * Gets the CmdRunner instance
@@ -25,15 +26,6 @@ public class MultiModuleDeployer {
      */
     public CmdRunner getCmdRunner() {
         return cmdRunner;
-    }
-
-    /**
-     * Gets the DeployWaiter instance
-     *
-     * @return the DeployWaiter instance
-     */
-    public DeployWaiter getDeployWaiter() {
-        return deployWaiter;
     }
 
     /**
@@ -62,7 +54,7 @@ public class MultiModuleDeployer {
                 // deploys the module according to the commands specified
                 moduleConfig.deploy(cmdRunner);
                 // waits the module deployment
-                Future deploymentFuture = moduleConfig.waitDeployment(deployWaiter);
+                Future deploymentFuture = moduleConfig.waitDeployment(vertx);
                 futures.add(deploymentFuture);
             }
             // after all the current idx modules have been successfully deployed
@@ -70,7 +62,7 @@ public class MultiModuleDeployer {
             CompositeFuture.all(futures).setHandler(h -> deploy(idx + 1));
         } else {
             // there are no more modules to deploy
-            deployWaiter.deployCompleted();
+            vertx.close();
         }
     }
 }

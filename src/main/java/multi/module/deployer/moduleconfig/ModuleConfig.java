@@ -2,12 +2,13 @@ package multi.module.deployer.moduleconfig;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import multi.module.deployer.DeployWaiter;
 import multi.module.deployer.cmdrunner.CmdRunner;
 
 import java.util.function.Predicate;
 
-
+/**
+ * @param <T> the type of the value passed to the Predicate that verifies the fulfill of the condition
+ */
 public interface ModuleConfig<T> {
 
     /**
@@ -23,44 +24,15 @@ public interface ModuleConfig<T> {
      * @param retryOnFailDelay the time to wait
      * @return this to enable fluency
      */
-    ModuleConfig setRetryOnFailDelay(long retryOnFailDelay);
-
-    ModuleConfig setSuccessCondition(Predicate<T> successCondition);
+    ModuleConfig<T> setRetryOnFailDelay(long retryOnFailDelay);
 
     /**
-     * Gets the Unix commands used to deploy the module
+     * Sets the condition to fulfill to consider the module deployed
      *
-     * @return the Unix commands used to deploy the module
+     * @param successCondition the condition to fulfill
+     * @return this to enable fluency
      */
-    String getUnixCmd();
-
-    /**
-     * Gets the Windows commands used to deploy the module
-     *
-     * @return the Windows commands used to deploy the module
-     */
-    String getWindowsCmd();
-
-    /**
-     * Gets the port where the module will be contacted for checking it's initialization
-     *
-     * @return the port where the module will be contacted for checking it's initialization
-     */
-    int getPort();
-
-    /**
-     * Gets the address where the module will be contacted for checking it's initialization
-     *
-     * @return the address where the module will be contacted for checking it's initialization
-     */
-    String getAddress();
-
-    /**
-     * Gets the uri where the module will be contacted for checking it's initialization
-     *
-     * @return the uri where the module will be contacted for checking it's initialization
-     */
-    String getRequestURI();
+    ModuleConfig<T> setSuccessCondition(Predicate<T> successCondition);
 
     /**
      * The strategy used to deploy the module
@@ -72,8 +44,8 @@ public interface ModuleConfig<T> {
     /**
      * The strategy used for waiting the module deployment
      *
-     * @param deployWaiter the DeployWaiter instance
+     * @param vertx a Vertx instance
      * @return the future that will complete after the module deployment
      */
-    Future<Void> waitDeployment(DeployWaiter deployWaiter);
+    Future<Void> waitDeployment(Vertx vertx);
 }

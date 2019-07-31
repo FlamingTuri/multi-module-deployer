@@ -2,32 +2,34 @@ package multi.module.deployer.moduleconfig.configs;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
-import multi.module.deployer.DeployWaiter;
 import multi.module.deployer.moduleconfig.AbstractAsyncResultModuleConfig;
+import multi.module.deployer.moduleconfig.info.HttpServiceInfo;
 
 /**
  * Class that checks for a module deployment by waiting for a successful http GET response
  */
-public class HttpModuleConfig extends AbstractAsyncResultModuleConfig<HttpResponse<Buffer>> {
+public class HttpModuleConfig extends AbstractAsyncResultModuleConfig<HttpResponse<Buffer>, HttpServiceInfo> {
 
     /**
      * Constructor with success condition set to AsyncResult::succeeded
      *
      * @param unixCmd    the commands to run on Unix-like environments
      * @param windowsCmd the commands to run on Windows environments
-     * @param port       the port where the microservice is listening to
-     * @param address    the microservice host address
-     * @param requestURI the requested api
      */
     public HttpModuleConfig(String unixCmd, String windowsCmd, int port, String address, String requestURI) {
-        super(unixCmd, windowsCmd, port, address, requestURI);
+        super(unixCmd, windowsCmd, new HttpServiceInfo(port, address, requestURI));
     }
 
     @Override
-    public Future<Void> waitDeployment(DeployWaiter deployWaiter) {
+    public Future<Void> waitDeployment(Vertx vertx) {
+        setVertxInstance(vertx);
+        int port = moduleInfo.getPort();
+        String address = moduleInfo.getAddress();
+        String requestURI = moduleInfo.getRequestURI();
         return waitHttpDeployment(port, address, requestURI);
     }
 

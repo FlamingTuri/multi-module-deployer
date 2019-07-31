@@ -2,9 +2,10 @@ package multi.module.deployer.moduleconfig.configs;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import multi.module.deployer.DeployWaiter;
+import io.vertx.core.Vertx;
 import multi.module.deployer.cmdrunner.CmdRunner;
 import multi.module.deployer.moduleconfig.AbstractModuleConfig;
+import multi.module.deployer.moduleconfig.info.ServiceInfo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.util.function.Consumer;
 /**
  * Class that waits for a module termination
  */
-public class SetupModuleConfig extends AbstractModuleConfig {
+public class SetupModuleConfig extends AbstractModuleConfig<Void, ServiceInfo> {
 
     private Process process;
 
@@ -24,7 +25,7 @@ public class SetupModuleConfig extends AbstractModuleConfig {
      * @param windowsCmd the commands to run on Windows environments
      */
     public SetupModuleConfig(String unixCmd, String windowsCmd) {
-        super(unixCmd, windowsCmd, -1, null, null);
+        super(unixCmd, windowsCmd, null);
     }
 
     @Override
@@ -33,7 +34,8 @@ public class SetupModuleConfig extends AbstractModuleConfig {
     }
 
     @Override
-    public Future<Void> waitDeployment(DeployWaiter deployWaiter) {
+    public Future<Void> waitDeployment(Vertx vertx) {
+        setVertxInstance(vertx);
         return waitProcessTermination(process);
     }
 

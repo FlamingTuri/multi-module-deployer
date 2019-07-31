@@ -1,20 +1,17 @@
 package multi.module.deployer.moduleconfig.configs;
 
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.WebSocket;
-import multi.module.deployer.DeployWaiter;
 import multi.module.deployer.moduleconfig.AbstractAsyncResultModuleConfig;
-import multi.module.deployer.moduleconfig.AbstractExecInNewTermModuleConfig;
-
-import java.util.function.Predicate;
+import multi.module.deployer.moduleconfig.info.HttpServiceInfo;
 
 /**
  * Class that checks for a module deployment by waiting for a successful websocket connection
  */
-public class WebSocketModuleConfig extends AbstractAsyncResultModuleConfig<WebSocket> {
+public class WebSocketModuleConfig extends AbstractAsyncResultModuleConfig<WebSocket, HttpServiceInfo> {
 
     /**
      * Constructor with success condition set to AsyncResult::succeeded
@@ -26,11 +23,15 @@ public class WebSocketModuleConfig extends AbstractAsyncResultModuleConfig<WebSo
      * @param requestURI the requested api
      */
     public WebSocketModuleConfig(String unixCmd, String windowsCmd, int port, String address, String requestURI) {
-        super(unixCmd, windowsCmd, port, address, requestURI);
+        super(unixCmd, windowsCmd, new HttpServiceInfo(port, address, requestURI));
     }
 
     @Override
-    public Future<Void> waitDeployment(DeployWaiter deployWaiter) {
+    public Future<Void> waitDeployment(Vertx vertx) {
+        setVertxInstance(vertx);
+        int port = moduleInfo.getPort();
+        String address = moduleInfo.getAddress();
+        String requestURI = moduleInfo.getRequestURI();
         return waitWebsocketDeployment(port, address, requestURI);
     }
 
@@ -42,7 +43,7 @@ public class WebSocketModuleConfig extends AbstractAsyncResultModuleConfig<WebSo
      * @param requestURI the requested api
      * @return a future that will be completed after the connection succeeds
      */
-    public Future<Void> waitWebsocketDeployment(int port, String host, String requestURI) {
+    private Future<Void> waitWebsocketDeployment(int port, String host, String requestURI) {
         System.out.println("Waiting for websocket connection at " + format(port, host, requestURI));
         Promise<Void> promise = Promise.promise();
         HttpClient client = vertx.createHttpClient();
