@@ -3,6 +3,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "5.1.0"
 }
 
+version = "1.0.0"
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -23,4 +25,9 @@ dependencies {
     val junitVersion = "5.3.1"
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+}
+
+tasks.shadowJar.configure {
+    // removes "-all" from the jar name
+    archiveClassifier.set("")
 }
