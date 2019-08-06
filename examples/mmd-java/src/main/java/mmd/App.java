@@ -6,11 +6,10 @@ import multi.module.deployer.moduleconfig.ModuleConfigFactory;
 
 public class App {
 
-    private static String commonCmd;
-    private static String linuxCmd;
-    private static String windowsCmd;
-
     public static void main(String[] args) {
+        String commonCmd;
+        String linuxCmd;
+        String windowsCmd;
         MultiModuleDeployer multiModuleDeployer = new MultiModuleDeployer();
 
         // ponger-ms dependencies installation commands
@@ -29,12 +28,18 @@ public class App {
         windowsCmd = "cd ..\\web-gui & " + commonCmd;
         ModuleConfig webGuiBuild = ModuleConfigFactory.setupModuleConfig(linuxCmd, windowsCmd);
 
+        // run simultaneously the modules build commands
         multiModuleDeployer.add(pongerBuild, pingerBuild, webGuiBuild);
 
         // commands to run ponger-ms
         linuxCmd = "cd ../ponger-ms; ./gradlew run";
         windowsCmd = "cd ..\\ponger-ms & gradlew.bat run";
-        multiModuleDeployer.add(ModuleConfigFactory.httpModuleConfig(linuxCmd, windowsCmd, 8080, "localhost", "/api/status"));
+        ModuleConfig pongerConfig = ModuleConfigFactory.httpModuleConfig(linuxCmd, windowsCmd, 8080, "localhost", "/api/status")
+                .setSuccessCondition(ar -> {
+                    // add custom deployment setup checking
+                    return ar.succeeded() && ar.result().statusCode() == 200;
+                });
+        multiModuleDeployer.add(pongerConfig);
 
         // commands to run pinger-ms
         commonCmd = "node app.js";
