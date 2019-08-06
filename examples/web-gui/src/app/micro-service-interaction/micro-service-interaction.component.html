@@ -1,0 +1,6 @@
+<mat-card>
+  {{serviceRole}}
+  <button mat-raised-button color="primary" (click)="getServiceStatus()">Get {{serviceRole}} Status</button>
+  <button mat-raised-button color="primary" (click)="getCount()">Get {{serviceRole}} Sent Count</button>
+  <label>{{serviceRole}} Sent Count: {{count}}</label>
+</mat-card>

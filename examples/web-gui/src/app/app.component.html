@@ -1,0 +1,13 @@
+<app-micro-service-interaction
+  [serviceRole]="'Ping'"
+  [servicePort]="3000"
+  [countRoute]="pingCountRoute"
+  [countRetriever]="pingCountRetriever">
+</app-micro-service-interaction>
+
+<app-micro-service-interaction
+  [serviceRole]="'Pong'"
+  [servicePort]="8080"
+  [countRoute]="pongCountRoute"
+  [countRetriever]="pongCountRetriever">
+</app-micro-service-interaction>
