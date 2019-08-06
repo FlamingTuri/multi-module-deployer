@@ -27,6 +27,6 @@ def downloadLibFromUrl(String libSaveDir, String libName, String libUrl) {
 dependencies {
     def libSaveDir = 'build/libs'
     def libName = 'multi-module-deployer-1.0.0.jar'
-    def url = 'https://github.com/FlamingTuri/multi-module-deployer/releases/download/1.0.0/multi-module-deployer-1.0.0.jar'
+    def url = 'https://github.com/FlamingTuri/multi-module-deployer/releases/download/v1.0.0/multi-module-deployer-1.0.0.jar'
     downloadLibFromUrl(libSaveDir, libName, url)
 }
