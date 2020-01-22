@@ -75,7 +75,8 @@ public class App {
 }
 ```
 
-For a running example look at mmd-java project inside the examples directory.
+For a running example look at the [java example](https://github.com/FlamingTuri/module-deployer-examples/tree/master/module-deployer-java-example) project
+ in the module-deployer-examples [repo](https://github.com/FlamingTuri/module-deployer-examples).
 
 ## Built With
 
