@@ -18,12 +18,47 @@ repositories {
     jcenter()
 }
 
+fun doIfFileIsMissing(fileName: String, saveDir: String, lambda: (File) -> Unit) {
+    val folder = File(saveDir)
+    if (!folder.exists()) {
+        folder.mkdirs()
+    }
+    val file = File("$saveDir/$fileName")
+    if (!file.exists()) {
+        lambda(file)
+    }
+}
+
+fun downloadResourceFromUrl(fileName: String, fileUrl: String, saveDir: String) {
+    doIfFileIsMissing(fileName, saveDir) {
+        ant.invokeMethod("get", mapOf("src" to fileUrl, "dest" to it))
+    }
+}
+
+fun downloadExecInNewTerminal(version: String) {
+    val resourcesDir = "src/main/resources"
+    val fileName = "exec-in-new-terminal-$version"
+    doIfFileIsMissing(fileName, resourcesDir) {
+        val tarFileName = "$fileName.tar.gz"
+        val url = "https://github.com/FlamingTuri/exec-in-new-terminal/releases/download/v$version/$tarFileName"
+        downloadResourceFromUrl(tarFileName, url, resourcesDir)
+        // untar
+        val tarFile = File("$resourcesDir/$tarFileName")
+        copy {
+            from(tarTree(resources.gzip(tarFile)))
+            into(resourcesDir)
+        }
+        tarFile.delete()
+    }
+}
+
 dependencies {
     implementation("org.apache.commons:commons-lang3:3.9")
     val vertxVersion = "3.8.0"
     api("io.vertx:vertx-core:$vertxVersion")
     api("io.vertx:vertx-web-client:$vertxVersion")
     api("io.vertx:vertx-mqtt:$vertxVersion")
+    downloadExecInNewTerminal("1.0.1")
 
     val junitVersion = "5.3.1"
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
