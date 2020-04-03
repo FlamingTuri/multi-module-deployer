@@ -6,7 +6,11 @@ package multi.module.deployer.cmdrunner;
 public class WindowsCmdRunner extends AbstractCmdRunner {
 
     public WindowsCmdRunner() {
-        super("bat", "cmd.exe", "/c");
+        this(true);
+    }
+
+    public WindowsCmdRunner(boolean replaceScript) {
+        super("bat", "cmd.exe", "/c", replaceScript);
     }
 
     @Override
