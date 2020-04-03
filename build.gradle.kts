@@ -1,8 +1,11 @@
 plugins {
     `java-library`
-    id("com.github.johnrengelman.shadow") version "5.1.0"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
+    `maven-publish`
+    signing
 }
 
+group = "multi.module.deployer"
 version = "1.0.0"
 
 java {
@@ -30,4 +33,29 @@ dependencies {
 tasks.shadowJar.configure {
     // removes "-all" from the jar name
     archiveClassifier.set("")
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/FlamingTuri/multi-module-deployer")
+            credentials {
+                username = "*"
+                password = "*"
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("mavenJava") {
+            artifactId = "multi-module-deployer"
+            groupId = project.group as String?
+            version = project.version as String?
+            from(components["java"])
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }
