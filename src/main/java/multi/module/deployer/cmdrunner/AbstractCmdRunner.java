@@ -1,19 +1,16 @@
 package multi.module.deployer.cmdrunner;
 
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 /**
  * Abstract class wrapping the logic for running low level commands
@@ -37,30 +34,23 @@ public abstract class AbstractCmdRunner implements CmdRunner {
         String scriptName = "exec-in-new-terminal." + scriptExtension;
         Path scriptPath = Paths.get(projectFilesDir, scriptName);
         scriptAbsolutePath = scriptPath.toString();
-        if (!scriptPath.toFile().exists() || replaceScript) {
-            try {
-                String folderName = "exec-in-new-terminal";
-                Reflections reflections = new Reflections(folderName, new ResourcesScanner());
-                Pattern p = Pattern.compile(folderName + ".*");
-                List<String> resourceList = reflections.getResources(p)
-                    .stream()
-                    .filter(e -> e.endsWith(scriptName))
-                    .collect(Collectors.toList());
-                if (resourceList.isEmpty()) {
-                    throw new FileNotFoundException(scriptName + "not found in jar");
-                } else {
-                    if (resourceList.size() > 1) {
-                        System.err.println("warning: multiple " + scriptName + " found in jar");
-                    }
-                    String scriptResourceName = Paths.get("/", resourceList.get(0)).toString();
-                    try (InputStream in = getClass().getResourceAsStream(scriptResourceName)) {
-                        Files.copy(in, scriptPath, StandardCopyOption.REPLACE_EXISTING);
-                    }
+        try {
+            String jarPath = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+            JarFile jar = new JarFile(jarPath);
+            Optional<String> exceInNewTerminalFolder = jar.stream().map(ZipEntry::getName)
+                .filter(fileName -> fileName.matches("exec-in-new-terminal-\\d+\\.\\d+\\.\\d+/"))
+                .findFirst();
+            if (exceInNewTerminalFolder.isPresent()) {
+                String scriptResourceName = Paths.get("/", exceInNewTerminalFolder.get(), scriptName).toString();
+                try (InputStream in = getClass().getResourceAsStream(scriptResourceName)) {
+                    Files.copy(in, scriptPath, StandardCopyOption.REPLACE_EXISTING);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.exit(-1);
+            } else {
+                throw new IOException();
             }
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
         }
         postCopyOperations();
         // setup runtime to run low level commands
