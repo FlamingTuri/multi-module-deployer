@@ -18,9 +18,9 @@ def downloadLibFromUrl(String libSaveDir, String libName, String libUrl) {
     if (!folder.exists()) {
         folder.mkdirs()
     }
-    def file = new File(libSaveDir + '/' + libName)
+    def file = new File("$libSaveDir/$libName")
     if (!file.exists()) {
-        new URL(libUrl).withInputStream { i -> file.withOutputStream { it << i } }
+        ant.get(src: libUrl, dest: file)
     }
     getDependencies().add('compile', fileTree(dir: libSaveDir, include: libName))
 }
@@ -31,9 +31,10 @@ and then add the following code to your dependencies declaration:
 ```gradle
 dependencies {
     /* ... */
-    def libSaveDir = 'build/libs'
-    def libName = 'multi-module-deployer-1.0.0.jar'
-    def url = 'https://github.com/FlamingTuri/multi-module-deployer/releases/download/1.0.0/multi-module-deployer-1.0.0.jar'
+    def libSaveDir = "${System.properties['user.home']}/.gradle/caches/modules-2/files-2.1"
+    def version = '1.0.0'
+    def libName = "multi-module-deployer-${version}.jar"
+    def url = "https://github.com/FlamingTuri/multi-module-deployer/releases/download/v$version/$libName"
     downloadLibFromUrl(libSaveDir, libName, url)
 }
 ```
