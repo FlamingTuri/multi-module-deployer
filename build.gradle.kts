@@ -1,3 +1,6 @@
+import java.nio.file.Files
+
+
 plugins {
     `java-library`
     id("com.github.johnrengelman.shadow") version "5.2.0"
@@ -50,6 +53,14 @@ fun downloadExecInNewTerminal(version: String) {
         }
         tarFile.delete()
     }
+    // remove exec-in-new-terminal directories which version differs from the specified one
+    Files.walk(File(resourcesDir).toPath())
+        .map { it.toFile() }
+        .filter {
+            it.isDirectory && !it.name.endsWith(version) &&
+                it.name.startsWith("exec-in-new-terminal-")
+        }
+        .forEach { delete(it.absolutePath) }
 }
 
 dependencies {
