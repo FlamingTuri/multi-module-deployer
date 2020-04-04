@@ -14,7 +14,11 @@ import java.util.Set;
 public class UnixCmdRunner extends AbstractCmdRunner {
 
     public UnixCmdRunner() {
-        super("sh", "bash", "-c");
+        this(true);
+    }
+
+    public UnixCmdRunner(boolean replaceScript) {
+        super("sh", "bash", "-c", replaceScript);
     }
 
     @Override
