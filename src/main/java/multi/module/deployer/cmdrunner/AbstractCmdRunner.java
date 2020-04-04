@@ -1,12 +1,19 @@
 package multi.module.deployer.cmdrunner;
 
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Abstract class wrapping the logic for running low level commands
@@ -27,15 +34,32 @@ public abstract class AbstractCmdRunner implements CmdRunner {
             System.exit(-1);
         }
         // create script to execute commands in a new terminal instance
-        String scriptName = "/exec-in-new-terminal." + scriptExtension;
-        scriptAbsolutePath = projectFilesDir + scriptName;
-        Path scriptPath = Paths.get(scriptAbsolutePath);
+        String scriptName = "exec-in-new-terminal." + scriptExtension;
+        Path scriptPath = Paths.get(projectFilesDir, scriptName);
+        scriptAbsolutePath = scriptPath.toString();
         if (!scriptPath.toFile().exists() || replaceScript) {
-            InputStream in = getClass().getResourceAsStream(scriptName);
             try {
-                Files.copy(in, scriptPath, StandardCopyOption.REPLACE_EXISTING);
+                String folderName = "exec-in-new-terminal";
+                Reflections reflections = new Reflections(folderName, new ResourcesScanner());
+                Pattern p = Pattern.compile(folderName + ".*");
+                List<String> resourceList = reflections.getResources(p)
+                    .stream()
+                    .filter(e -> e.endsWith(scriptName))
+                    .collect(Collectors.toList());
+                if (resourceList.isEmpty()) {
+                    throw new FileNotFoundException(scriptName + "not found in jar");
+                } else {
+                    if (resourceList.size() > 1) {
+                        System.err.println("warning: multiple " + scriptName + " found in jar");
+                    }
+                    String scriptResourceName = Paths.get("/", resourceList.get(0)).toString();
+                    try (InputStream in = getClass().getResourceAsStream(scriptResourceName)) {
+                        Files.copy(in, scriptPath, StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
+                System.exit(-1);
             }
         }
         postCopyOperations();

@@ -53,6 +53,7 @@ fun downloadExecInNewTerminal(version: String) {
 }
 
 dependencies {
+    implementation("org.reflections:reflections:0.9.12")
     implementation("org.apache.commons:commons-lang3:3.9")
     val vertxVersion = "3.8.0"
     api("io.vertx:vertx-core:$vertxVersion")
@@ -65,6 +66,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 }
 
+// shadowJar outputs inside build/lib
 tasks.shadowJar.configure {
     // removes "-all" from the jar name
     archiveClassifier.set("")
