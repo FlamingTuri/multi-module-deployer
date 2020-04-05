@@ -16,8 +16,16 @@ import java.util.List;
 public class MultiModuleDeployer {
 
     private final List<ModuleConfig[]> moduleConfigList = new ArrayList<>();
-    private final CmdRunner cmdRunner = CmdRunnerRetriever.get();
+    private final CmdRunner cmdRunner;
     private final Vertx vertx = Vertx.vertx();
+
+    public MultiModuleDeployer() {
+        cmdRunner = CmdRunnerRetriever.get();
+    }
+
+    public MultiModuleDeployer(boolean replaceScript) {
+        cmdRunner = CmdRunnerRetriever.get(replaceScript);
+    }
 
     /**
      * Gets the CmdRunner instance
