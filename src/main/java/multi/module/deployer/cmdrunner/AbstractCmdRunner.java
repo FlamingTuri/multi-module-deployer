@@ -35,22 +35,24 @@ public abstract class AbstractCmdRunner implements CmdRunner {
         String scriptName = "exec-in-new-terminal." + scriptExtension;
         Path scriptPath = Paths.get(projectFilesDir, scriptName);
         scriptAbsolutePath = scriptPath.toString();
-        try {
-            File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
-            // gets the name of the folder containing exec-in-new-terminal scripts
-            Optional<String> execInNewTerminalFolder = jarFile.isFile() ? getFromJar(jarFile) : getFromFile();
-            if (execInNewTerminalFolder.isPresent()) {
-                // loads script from resources and copies it on user's filesystem
-                String scriptResourceName = Paths.get("/", execInNewTerminalFolder.get(), scriptName).toString();
-                try (InputStream in = getClass().getResourceAsStream(scriptResourceName)) {
-                    Files.copy(in, scriptPath, StandardCopyOption.REPLACE_EXISTING);
+        if (!scriptPath.toFile().exists() || replaceScript) {
+            try {
+                File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+                // gets the name of the folder containing exec-in-new-terminal scripts
+                Optional<String> execInNewTerminalFolder = jarFile.isFile() ? getFromJar(jarFile) : getFromFile();
+                if (execInNewTerminalFolder.isPresent()) {
+                    // loads script from resources and copies it on user's filesystem
+                    String scriptResourceName = Paths.get("/", execInNewTerminalFolder.get(), scriptName).toString();
+                    try (InputStream in = getClass().getResourceAsStream(scriptResourceName)) {
+                        Files.copy(in, scriptPath, StandardCopyOption.REPLACE_EXISTING);
+                    }
+                } else {
+                    throw new IOException();
                 }
-            } else {
-                throw new IOException();
+            } catch (URISyntaxException | IOException e) {
+                e.printStackTrace();
+                System.exit(-1);
             }
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
         }
         postCopyOperations();
         // setup runtime to run low level commands
