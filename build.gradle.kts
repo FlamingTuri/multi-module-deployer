@@ -64,7 +64,6 @@ fun downloadExecInNewTerminal(version: String) {
 }
 
 dependencies {
-    implementation("org.reflections:reflections:0.9.12")
     implementation("org.apache.commons:commons-lang3:3.9")
     val vertxVersion = "3.8.0"
     api("io.vertx:vertx-core:$vertxVersion")
